@@ -5,26 +5,16 @@ const Report = require('../modelo/Reports');
 // Los otros servicios llaman a este endpoint para registrar una venta
 const createSaleReport = async (req, res) => {
   try {
-    const { orderId, customerId, customerName, items, totalAmount, status, saleDate } = req.body;
-
-    // Verificar si ya existe ese pedido
-    const existing = await Report.findOne({ orderId });
-    if (existing) {
-      return res.status(409).json({ message: `El pedido ${orderId} ya fue registrado` });
-    }
+    const { items, totalAmount, saleDate } = req.body;
 
     const report = new Report({
-      orderId,
-      customerId,
-      customerName,
       items,
       totalAmount,
-      status: status || 'completed',
       saleDate: saleDate || new Date()
     });
 
     await report.save();
-    res.status(201).json({ message: 'Venta registrada exitosamente', data: report });
+    res.status(201).json({ message: '', data: report });
 
   } catch (error) {
     res.status(500).json({ message: 'Error al registrar la venta', error: error.message });
@@ -140,10 +130,31 @@ const getAllReports = async (req, res) => {
   }
 };
 
+//──────────────────────────────────────────────── CREAR REPORTE 200OK ────────────────────────────────────────────────
+//POST: /api/reports/200OK
+const createReport200OK = async (req, res) => {
+  try {
+    const { items, totalAmount, saleDate } = req.body;
+
+    const report = new Report({
+      items,
+      totalAmount,
+      saleDate: saleDate || new Date()
+    });
+
+    await report.save();
+    res.status(201).json({ message: 'Reporte creado exitosamente', data: report });
+
+  } catch (error) {
+    res.status(500).json({ message: 'Error al crear el reporte', error: error.message });
+  }
+};
+
 module.exports = {
   createSaleReport,
   getReportByCustomer,
   getReportByProduct,
   getReportByPeriod,
-  getAllReports
+  getAllReports,
+  createReport200OK
 };
