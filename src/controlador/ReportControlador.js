@@ -138,6 +138,7 @@ const getAllReports = async (req, res) => {
 //──────────────────────────────────────────────── CREAR REPORTE 200OK ────────────────────────────────────────────────
 //POST: /api/reports/200OK
 const createReport200OK = async (req, res) => {
+  console.log("[reports] POST /api/reports/200OK body:", req.body);
   try {
     const { items, totalAmount, saleDate } = req.body;
 
@@ -150,14 +151,17 @@ const createReport200OK = async (req, res) => {
     });
 
     await report.save();
+    console.log("[reports] createReport200OK saved id:", report._id);
     res.status(201).json({ message: 'Reporte creado exitosamente', data: report });
 
   } catch (error) {
+    console.error("[reports] createReport200OK error:", error);
     res.status(500).json({ message: 'Error al crear el reporte', error: error.message });
   }
 };
 
 const createReportDeleted = async (req, res) => {
+  console.log("[reports] POST /api/reports/deleted body:", req.body);
   try {
     const { items, totalAmount = 0, saleDate } = req.body;
 
@@ -170,9 +174,11 @@ const createReportDeleted = async (req, res) => {
     });
 
     await report.save();
+    console.log("[reports] createReportDeleted saved id:", report._id);
     res.status(201).json({ message: 'Reporte de eliminación creado exitosamente', data: report });
 
   } catch (error) {
+    console.error("[reports] createReportDeleted error:", error);
     res.status(500).json({ message: 'Error al crear el reporte de eliminación', error: error.message });
   }
 };
