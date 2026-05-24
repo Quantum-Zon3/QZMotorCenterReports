@@ -10,7 +10,9 @@ const createSaleReport = async (req, res) => {
     const report = new Report({
       items,
       totalAmount,
-      saleDate: saleDate || new Date()
+      saleDate: saleDate || new Date(),
+      status: 'completed',
+      eventType: 'sale'
     });
 
     await report.save();
@@ -93,7 +95,10 @@ const getReportByPeriod = async (req, res) => {
       {
         $match: {
           saleDate: { $gte: startDate, $lte: endDate },
-          status: 'completed'
+          $or: [
+            { status: 'completed' },
+            { status: { $exists: false } }
+          ]
         }
       },
       {
@@ -139,7 +144,9 @@ const createReport200OK = async (req, res) => {
     const report = new Report({
       items,
       totalAmount,
-      saleDate: saleDate || new Date()
+      saleDate: saleDate || new Date(),
+      status: 'completed',
+      eventType: 'create'
     });
 
     await report.save();
@@ -150,11 +157,32 @@ const createReport200OK = async (req, res) => {
   }
 };
 
+const createReportDeleted = async (req, res) => {
+  try {
+    const { items, totalAmount = 0, saleDate } = req.body;
+
+    const report = new Report({
+      items,
+      totalAmount,
+      saleDate: saleDate || new Date(),
+      status: 'completed',
+      eventType: 'delete'
+    });
+
+    await report.save();
+    res.status(201).json({ message: 'Reporte de eliminación creado exitosamente', data: report });
+
+  } catch (error) {
+    res.status(500).json({ message: 'Error al crear el reporte de eliminación', error: error.message });
+  }
+};
+
 module.exports = {
   createSaleReport,
   getReportByCustomer,
   getReportByProduct,
   getReportByPeriod,
   getAllReports,
-  createReport200OK
+  createReport200OK,
+  createReportDeleted
 };

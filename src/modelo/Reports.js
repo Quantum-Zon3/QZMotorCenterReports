@@ -12,8 +12,18 @@ const saleItemSchema = new mongoose.Schema({
 // Esquema principal del reporte
 const reportSchema = new mongoose.Schema({
   items: [saleItemSchema],
-  totalAmount: { type: Number, required: true },
-  saleDate: { type: Date, default: Date.now }
+  totalAmount: { type: Number, required: true, default: 0 },
+  saleDate: { type: Date, default: Date.now },
+  status: {
+    type: String,
+    enum: ['pending', 'completed', 'failed'],
+    default: 'completed'
+  },
+  eventType: {
+    type: String,
+    enum: ['create', 'sale', 'delete', 'other'],
+    default: 'create'
+  }
 });
 
 module.exports = mongoose.model('Report', reportSchema);
