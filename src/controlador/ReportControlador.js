@@ -179,7 +179,11 @@ const createReportDeleted = async (req, res) => {
 
   } catch (error) {
     console.error("[reports] createReportDeleted error:", error);
-    res.status(500).json({ message: 'Error al crear el reporte de eliminación', error: error.message });
+    res.status(500).json({
+      message: 'Error al crear el reporte de eliminación',
+      error: error.message,
+      stack: error.stack,
+    });
   }
 };
 
